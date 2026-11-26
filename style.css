@@ -1,0 +1,45 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  background: #101211;
+  color: #eceee8;
+  --line: #3a403a;
+  --muted: #a9b2a7;
+  --accent: #cef28b;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+main { width: min(100%, 62rem); margin: auto; padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 2rem; }
+header { border-bottom: 1px solid var(--line); padding-bottom: 1.25rem; margin-bottom: 1.25rem; }
+.version, .size, output { font-family: ui-monospace, monospace; font-size: .875rem; }
+.version { margin: 0 0 .6rem; letter-spacing: .12em; color: var(--accent); }
+h1 { margin: 0; font-weight: 550; font-size: clamp(2rem, 6vw, 4.5rem); line-height: .95; letter-spacing: -.055em; }
+.workspace { display: grid; gap: 1rem; }
+.viewbar, .actions, label { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.viewbar { margin-bottom: .5rem; }
+.tabs { display: flex; gap: .25rem; }
+.size, .privacy { color: var(--muted); }
+button { font: inherit; min-height: 44px; padding: .5rem .75rem; border: 1px solid var(--line); border-radius: .35rem; background: #1c211c; color: inherit; cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+button[aria-pressed="true"] { color: var(--accent); border-color: #819965; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.primary { background: var(--accent); color: #13200b; font-weight: 650; border-color: transparent; }
+.frame { position: relative; aspect-ratio: 1; background: #000; box-shadow: 0 0 0 1px var(--line); }
+canvas, video, .empty { position: absolute; inset: 0; width: 100%; height: 100%; }
+video { object-fit: cover; }
+canvas { z-index: 1; }
+.empty { z-index: 2; }
+.empty { display: grid; place-content: center; justify-items: center; padding: 1rem; text-align: center; color: var(--muted); }
+.reticle { width: 2.75rem; aspect-ratio: 1; border: 1px solid #57634f; }
+.controls { display: grid; gap: .5rem; align-content: start; }
+.status { color: var(--accent); margin: 0 0 .35rem; }
+.adjustments { padding: .75rem 0 .25rem; }
+output { color: var(--accent); }
+input[type="range"] { display: block; width: 100%; height: 44px; margin: 0; accent-color: var(--accent); }
+.actions > * { flex: 1; }
+.privacy { font-size: .875rem; margin: .5rem 0 0; }
+@media (min-width: 48rem) {
+  .workspace { grid-template-columns: minmax(0, 1fr) 17rem; gap: 1.75rem; }
+  .controls { padding-top: 3.25rem; }
+}

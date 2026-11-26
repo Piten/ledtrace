@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101211">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Complicated Time Peace – Mobile v0.1</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="version">MOBILE / V0.1</p>
+      <h1>Complicated<br>Time Peace</h1>
+    </header>
+    <div class="workspace">
+      <section aria-label="Visning">
+        <div class="viewbar">
+          <div class="tabs" role="group" aria-label="Velg visning">
+            <button id="trace" aria-pressed="true">Lysspor</button>
+            <button id="preview" aria-pressed="false" disabled>Kamera</button>
+          </div>
+          <span class="size">640 × 640</span>
+        </div>
+        <div class="frame">
+          <canvas id="result" width="640" height="640" aria-label="Akkumulert lysspor"></canvas>
+          <video id="video" autoplay muted playsinline aria-label="Kameraforhåndsvisning" hidden></video>
+          <div id="empty" class="empty">
+            <div class="reticle" aria-hidden="true"></div>
+            <p>Åpne kameraet for å sikte inn motivet.</p>
+          </div>
+        </div>
+      </section>
+      <section class="controls" aria-label="Kamera og lysspor">
+        <p id="status" class="status" role="status">Kamera av</p>
+        <button id="camera">Åpne kamera</button>
+        <button id="capture" class="primary" disabled>Start sporing</button>
+        <div class="adjustments">
+          <label for="threshold">Terskel <output id="thresholdValue" for="threshold">145</output></label>
+          <input id="threshold" type="range" min="0" max="255" value="145">
+          <label for="glow">Glød <output id="glowValue" for="glow">30 %</output></label>
+          <input id="glow" type="range" min="0" max="100" value="30">
+        </div>
+        <div class="actions">
+          <button id="reset" disabled>Nullstill</button>
+          <button id="export" disabled>Lagre PNG</button>
+        </div>
+        <p class="privacy">Kamerabildene behandles lokalt på mobilen.</p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
