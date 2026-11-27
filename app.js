@@ -1,4 +1,4 @@
-import { accumulate, squareCrop } from './image.js';
+import { accumulate, blurRGB, squareCrop } from './image.js';
 
 const byId = (id) => document.getElementById(id);
 const video = byId('video');
@@ -12,6 +12,8 @@ const trace = byId('trace');
 const preview = byId('preview');
 const threshold = byId('threshold');
 const glow = byId('glow');
+const spread = byId('spread');
+const mode = byId('mode');
 const status = byId('status');
 
 function makeCanvas(side, options) {
@@ -22,7 +24,8 @@ function makeCanvas(side, options) {
 
 const input = makeCanvas(size, { willReadFrequently: true });
 const base = makeCanvas(size);
-const bloom = makeCanvas(80);
+const bloom = makeCanvas(160, { willReadFrequently: true });
+const blurScratch = new Uint8ClampedArray(160 * 160 * 4);
 const output = result.getContext('2d', { alpha: false });
 const pixels = base.createImageData(size, size);
 for (let i = 3; i < pixels.data.length; i += 4) pixels.data[i] = 255;
@@ -61,8 +64,12 @@ function render() {
   output.drawImage(base.canvas, 0, 0);
   if (Number(glow.value) === 0) return;
 
-  // Downsample and smoothly enlarge the image to spread the highlights.
-  bloom.drawImage(base.canvas, 0, 0, bloom.canvas.width, bloom.canvas.height);
+  const side = bloom.canvas.width;
+  const radius = Math.round(Number(spread.value) * side / size);
+  bloom.drawImage(base.canvas, 0, 0, side, side);
+  const halo = bloom.getImageData(0, 0, side, side);
+  blurRGB(halo.data, blurScratch, side, radius);
+  bloom.putImageData(halo, 0, 0);
   output.save();
   output.globalCompositeOperation = 'lighter';
   output.globalAlpha = Number(glow.value) / 100;
@@ -153,7 +160,7 @@ function sample(now) {
     lastSample = now;
     lastVideoTime = video.currentTime;
     input.drawImage(video, ...squareCrop(video.videoWidth, video.videoHeight), 0, 0, size, size);
-    accumulate(pixels.data, input.getImageData(0, 0, size, size).data, Number(threshold.value));
+    accumulate(pixels.data, input.getImageData(0, 0, size, size).data, Number(threshold.value), mode.value);
     render();
     if (!hasFrames) {
       hasFrames = true;
@@ -196,6 +203,15 @@ threshold.addEventListener('input', () => { byId('thresholdValue').value = thres
 glow.addEventListener('input', () => {
   byId('glowValue').value = glow.value + ' %';
   render();
+});
+spread.addEventListener('input', () => {
+  byId('spreadValue').value = spread.value + ' px';
+  render();
+});
+mode.addEventListener('change', () => {
+  byId('modeHelp').textContent = mode.value === 'rgb'
+    ? 'Terskelen gjelder hver fargekanal separat.'
+    : 'Terskelen gjelder pikselens samlede lysstyrke.';
 });
 exportButton.addEventListener('click', () => {
   // Encode synchronously so the download starts in the user gesture.

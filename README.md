@@ -1,4 +1,4 @@
-# Complicated Time Peace – Mobile v0.1
+# Complicated Time Peace – Mobile v0.2
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
@@ -33,4 +33,11 @@ En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. A
 
 Appen leser opptil omtrent 15 nye videobilder per sekund og skalerer det sentrerte kvadratet til 640 × 640. Et piksel passerer hvis den vektede lysstyrken når terskelen. For et piksel som passerer, beholder appen den høyeste verdien som er sett i hver RGB-kanal. Gløden legges til ved visning og eksport, slik at den kan justeres uten å endre det lagrede sporet.
 
-**Teststatus:** En skrivebordstest i Chrome med simulert kameravideo bekreftet kvadratisk utsnitt, terskel, RGB-maksimum, forhåndsvisning, sporing, glød, stopp, frigjøring av kamera, nullstilling, PNG-koding og håndtering av avvist tillatelse. Fysisk enhetstest på iPhone Safari og Android Chrome er ikke gjennomført.
+## Test glød og RGB-sporing i v0.2
+
+- Bruk **Lysstyrke** for å slippe inn hele RGB-pikselet når den vektede lysstyrken når terskelen. Bruk **RGB-kanaler** for å slippe inn rød, grønn og blå separat. Dette gir en mettet rød eller blå LED mulighet til å tegne spor selv når den vektede lysstyrken er lav.
+- Hold telefonen stødig og prøv en rød, grønn og blå lyskilde i et mørkt rom. Begynn med terskel 145. Nullstill før du bytter sporingsmodus for å sammenligne samme motiv fra tomt lerret. Endring av sporingsmodus og terskel gjelder kommende videobilder.
+- Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
+- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.2**.
+
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet RGB-terskelen, glødfilteret, kameraflyten og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.2 gjenstår på iPhone Safari og Android Chrome.
