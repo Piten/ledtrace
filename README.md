@@ -1,4 +1,4 @@
-# Complicated Time Peace – Mobile v0.4
+# Complicated Time Peace – Mobile v0.5
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
@@ -38,9 +38,9 @@ Appen leser nye videobilder i takt med kameraet og skalerer det sentrerte kvadra
 - Bruk **Lysstyrke** for å slippe inn hele RGB-pikselet når den vektede lysstyrken når terskelen. Bruk **RGB-kanaler** for å slippe inn rød, grønn og blå separat. Dette gir en mettet rød eller blå LED mulighet til å tegne spor selv når den vektede lysstyrken er lav.
 - Hold telefonen stødig og prøv en rød, grønn og blå lyskilde i et mørkt rom. Begynn med terskel 145. Nullstill før du bytter sporingsmodus for å sammenligne samme motiv fra tomt lerret. Endring av sporingsmodus og terskel gjelder kommende videobilder.
 - Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
-- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.4**.
+- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.5**.
 
-**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.4 gjenstår på iPhone Safari og Android Chrome.
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.5 gjenstår på iPhone Safari og Android Chrome.
 
 ## Mobilvisning i v0.3
 
@@ -51,3 +51,9 @@ Kamerabildet fyller hele nettleserens synlige område, med kameravalg øverst og
 Appen ber om 30 kamerabilder i sekundet og bruker nye bilder etter hvert som nettleseren leverer dem. Faktisk hastighet avhenger av mobil, lys og kamera. Maksimum beholdes for hver kanal, slik at sporet blir liggende. En myk overgang over terskelen demper piksler nær terskelen. Faste lysspor tegnes bare på nytt når de har endret seg eller du justerer gløden.
 
 Sammenlign ved å holde mobilen stødig og bevege en liten LED i en jevn bue, først sakte og så raskt. Se etter avstand mellom segmentene og harde kanter. Prøv med glød på 0 % først, slik at du ser selve sporet. Prøv samme motiv med vanlig romlys og svakere lys. Kameraet kan levere færre bilder i mørket.
+
+## Automatisk vidvinkel i v0.5
+
+Når du trykker **Åpne kamera**, prøver appen 0,6× hvis nettleseren tilbyr den innstillingen. Appen viser **0,6× aktiv** først når kameraet rapporterer innstillingen tilbake. Hvis nettleseren i stedet tilbyr et eget ultravidvinkelkamera med gjenkjennelig navn, velger appen det og viser **Ultravidvinkel aktiv**. Bildevinkelen kan avvike fra 0,6× i Kamera-appen. Ellers åpnes vanlig bakkamera med en statusmelding. Nettappen er avhengig av hvilke linser og zoomverdier nettleseren gir tilgang til.
+
+Sjekk statusmeldingen på iPhone rett etter åpning. Rett kameraet mot samme motiv som i Kamera-appen med 0,6× og sammenlign bildevinkel og om kamerafeilen er borte.

@@ -122,6 +122,65 @@ function cameraError(error) {
   }
 }
 
+const rearCamera = {
+  facingMode: { exact: 'environment' },
+  width: { ideal: 1280 },
+  height: { ideal: 720 },
+  frameRate: { ideal: 30, max: 60 },
+};
+
+function getCamera(deviceId) {
+  const { facingMode, ...captureSettings } = rearCamera;
+  const cameraChoice = deviceId ? { deviceId: { exact: deviceId } } : { facingMode };
+  return navigator.mediaDevices.getUserMedia({ audio: false, video: { ...captureSettings, ...cameraChoice } });
+}
+
+async function applyWideZoom(track) {
+  const zoom = track.getCapabilities?.().zoom;
+  if (!zoom || zoom.min > 0.6 || zoom.max < 0.6) return false;
+  try {
+    await track.applyConstraints({ ...track.getConstraints(), advanced: [{ zoom: 0.6 }] });
+    const actualZoom = track.getSettings().zoom;
+    return Number.isFinite(actualZoom) && Math.abs(actualZoom - 0.6) < 0.01;
+  } catch {
+    return false;
+  }
+}
+
+function isUltraWide(label) {
+  return /ultra[\s-]*(wide|vidvinkel|weitwinkel|gran angular|grand[\s-]*angle|ampio)/i.test(label);
+}
+
+async function prepareWideCamera(initial, isCurrent) {
+  const track = initial.getVideoTracks()[0];
+  if (await applyWideZoom(track)) return [initial, '0,6× aktiv.'];
+  if (!isCurrent()) return [initial, ''];
+  if (isUltraWide(track.label)) return [initial, 'Ultravidvinkel aktiv.'];
+
+  let devices;
+  try {
+    devices = await navigator.mediaDevices.enumerateDevices();
+  } catch {
+    return [initial, 'Vanlig bakkamera aktivt. Safari eller Chrome tilbyr ikke 0,6× her.'];
+  }
+  const wide = devices.find((device) =>
+    device.kind === 'videoinput' && device.deviceId && isUltraWide(device.label));
+
+  const fallback = 'Vanlig bakkamera aktivt. 0,6× er ikke tilgjengelig her.';
+  if (!wide || !isCurrent()) return [initial, fallback];
+  if (wide.deviceId === track.getSettings().deviceId) return [initial, 'Ultravidvinkel aktiv.'];
+
+  // Release the old camera before opening a second lens on iOS.
+  initial.getTracks().forEach((source) => source.stop());
+  try {
+    const replacement = await getCamera(wide.deviceId);
+    return [replacement, 'Ultravidvinkel aktiv.'];
+  } catch (error) {
+    if (!isCurrent()) throw error;
+    return [await getCamera(), fallback];
+  }
+}
+
 async function openCamera() {
   if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
     status.textContent = 'Åpne HTTPS-lenken direkte i Safari eller Chrome for å bruke kameraet.';
@@ -134,11 +193,16 @@ async function openCamera() {
   refreshControls();
 
   try {
-    const nextStream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: { facingMode: { exact: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 } },
-    });
-    if (request !== generation || document.hidden) {
+    const initial = await getCamera();
+    const isCurrent = () => request === generation && !document.hidden;
+    if (!isCurrent()) {
+      initial.getTracks().forEach((track) => track.stop());
+      if (request === generation) closeCamera();
+      return;
+    }
+    stream = initial;
+    const [nextStream, cameraStatus] = await prepareWideCamera(initial, isCurrent);
+    if (!isCurrent()) {
       nextStream.getTracks().forEach((track) => track.stop());
       if (request === generation) closeCamera();
       return;
@@ -159,7 +223,7 @@ async function openCamera() {
     await video.play();
     if (request !== generation) return;
     opening = false;
-    status.textContent = 'Kamera klart. Sikt inn motivet.';
+    status.textContent = cameraStatus;
     show('preview');
   } catch (error) {
     if (request === generation) closeCamera(cameraError(error));
