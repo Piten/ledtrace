@@ -1,4 +1,4 @@
-# Complicated Time Peace – Mobile v0.3
+# Complicated Time Peace – Mobile v0.4
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
@@ -31,17 +31,23 @@ En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. A
 
 ## Hvordan sporet bygges
 
-Appen leser opptil omtrent 15 nye videobilder per sekund og skalerer det sentrerte kvadratet til 640 × 640. Et piksel passerer hvis den vektede lysstyrken når terskelen. For et piksel som passerer, beholder appen den høyeste verdien som er sett i hver RGB-kanal. Gløden legges til ved visning og eksport, slik at den kan justeres uten å endre det lagrede sporet.
+Appen leser nye videobilder i takt med kameraet og skalerer det sentrerte kvadratet til 640 × 640. Et piksel passerer hvis den vektede lysstyrken når terskelen. For et piksel som passerer, beholder appen den høyeste verdien som er sett i hver RGB-kanal. Gløden legges til ved visning og eksport, slik at den kan justeres uten å endre det lagrede sporet.
 
 ## Test glød og RGB-sporing i v0.2
 
 - Bruk **Lysstyrke** for å slippe inn hele RGB-pikselet når den vektede lysstyrken når terskelen. Bruk **RGB-kanaler** for å slippe inn rød, grønn og blå separat. Dette gir en mettet rød eller blå LED mulighet til å tegne spor selv når den vektede lysstyrken er lav.
 - Hold telefonen stødig og prøv en rød, grønn og blå lyskilde i et mørkt rom. Begynn med terskel 145. Nullstill før du bytter sporingsmodus for å sammenligne samme motiv fra tomt lerret. Endring av sporingsmodus og terskel gjelder kommende videobilder.
 - Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
-- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.3**.
+- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.4**.
 
-**Teststatus:** Skrivebords-Chrome med simulert video og mobilbredde bekreftet kant-til-kant-kamera, kontroller oppå bildet, innstillingspanel, sporing og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.3 gjenstår på iPhone Safari og Android Chrome.
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.4 gjenstår på iPhone Safari og Android Chrome.
 
 ## Mobilvisning i v0.3
 
 Kamerabildet fyller hele nettleserens synlige område, med kameravalg øverst og kontroller nederst. Nettleserens egne adresselinjer styres av nettleseren. Åpne **Innstillinger** for terskel, RGB-valg og glød. Panelet kan lukkes mens sporingen pågår. Den stiplede rammen markerer det sentrerte kvadratutsnittet der kanten er synlig. På noen skjermer kan deler av kvadratet ligge utenfor den kant-til-kant-visningen. **Lysspor** viser hele kvadratet som lagres i PNG.
+
+## Jevnere spor i v0.4
+
+Appen ber om 30 kamerabilder i sekundet og bruker nye bilder etter hvert som nettleseren leverer dem. Faktisk hastighet avhenger av mobil, lys og kamera. Maksimum beholdes for hver kanal, slik at sporet blir liggende. En myk overgang over terskelen demper piksler nær terskelen. Faste lysspor tegnes bare på nytt når de har endret seg eller du justerer gløden.
+
+Sammenlign ved å holde mobilen stødig og bevege en liten LED i en jevn bue, først sakte og så raskt. Se etter avstand mellom segmentene og harde kanter. Prøv med glød på 0 % først, slik at du ser selve sporet. Prøv samme motiv med vanlig romlys og svakere lys. Kameraet kan levere færre bilder i mørket.

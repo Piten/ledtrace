@@ -26,8 +26,8 @@ function makeCanvas(side, options) {
 
 const input = makeCanvas(size, { willReadFrequently: true });
 const base = makeCanvas(size);
-const bloom = makeCanvas(160, { willReadFrequently: true });
-const blurScratch = new Uint8ClampedArray(160 * 160 * 4);
+const bloom = makeCanvas(80, { willReadFrequently: true });
+const blurScratch = new Uint8ClampedArray(bloom.canvas.width ** 2 * 4);
 const output = result.getContext('2d', { alpha: false });
 const pixels = base.createImageData(size, size);
 for (let i = 3; i < pixels.data.length; i += 4) pixels.data[i] = 255;
@@ -39,7 +39,8 @@ let recording = false;
 let view = 'trace';
 let hasFrames = false;
 let animation = 0;
-let lastSample = -Infinity;
+const useVideoFrames = typeof video.requestVideoFrameCallback === 'function' &&
+  typeof video.cancelVideoFrameCallback === 'function';
 let lastVideoTime = -1;
 
 function updateCropGuide() {
@@ -90,7 +91,8 @@ function render() {
 
 function stopRecording() {
   recording = false;
-  cancelAnimationFrame(animation);
+  if (useVideoFrames) video.cancelVideoFrameCallback(animation);
+  else cancelAnimationFrame(animation);
 }
 
 function closeCamera(message = 'Kamera av') {
@@ -134,7 +136,7 @@ async function openCamera() {
   try {
     const nextStream = await navigator.mediaDevices.getUserMedia({
       audio: false,
-      video: { facingMode: { exact: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+      video: { facingMode: { exact: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 } },
     });
     if (request !== generation || document.hidden) {
       nextStream.getTracks().forEach((track) => track.stop());
@@ -164,21 +166,25 @@ async function openCamera() {
   }
 }
 
-function sample(now) {
+function scheduleSample() {
+  animation = useVideoFrames ? video.requestVideoFrameCallback(sample) : requestAnimationFrame(sample);
+}
+
+function sample() {
   if (!recording) return;
-  if (now - lastSample >= 1000 / 15 && video.readyState >= 2 &&
-      video.videoWidth && video.videoHeight && video.currentTime !== lastVideoTime) {
-    lastSample = now;
+  if (video.readyState >= 2 && video.videoWidth && video.videoHeight &&
+      (useVideoFrames || video.currentTime !== lastVideoTime)) {
     lastVideoTime = video.currentTime;
     input.drawImage(video, ...squareCrop(video.videoWidth, video.videoHeight), 0, 0, size, size);
-    accumulate(pixels.data, input.getImageData(0, 0, size, size).data, Number(threshold.value), mode.value);
-    render();
+    const changed = accumulate(pixels.data, input.getImageData(0, 0, size, size).data,
+      Number(threshold.value), mode.value, 24);
+    if (changed) render();
     if (!hasFrames) {
       hasFrames = true;
       refreshControls();
     }
   }
-  animation = requestAnimationFrame(sample);
+  scheduleSample();
 }
 
 camera.addEventListener('click', () => {
@@ -191,10 +197,9 @@ capture.addEventListener('click', () => {
     status.textContent = 'Sporing stoppet. Kameraet er på.';
   } else {
     recording = true;
-    lastSample = -Infinity;
     lastVideoTime = -1;
     status.textContent = 'Sporing pågår.';
-    animation = requestAnimationFrame(sample);
+    scheduleSample();
   }
   show('trace');
 });

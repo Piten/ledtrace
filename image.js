@@ -1,26 +1,33 @@
-// Use integer luma weights that sum to 256. The threshold gates the
-// whole pixel before the three color channels are accumulated separately.
-export function accumulate(target, frame, threshold, mode = 'luma') {
-  if (mode === 'rgb') {
-    for (let i = 0; i < target.length; i += 4) {
-      for (let channel = i; channel < i + 3; channel++) {
-        if (frame[channel] >= threshold) {
-          target[channel] = Math.max(target[channel], frame[channel]);
-        }
-      }
-    }
-    return;
+// Build the transfer curve once for each frame and apply it to the
+// selected brightness measure. The transition starts at the threshold.
+const weights = new Float32Array(256);
+
+export function accumulate(target, frame, threshold, mode = 'luma', softness = 0) {
+  for (let value = threshold; value < weights.length; value++) {
+    const t = softness ? Math.min(1, (value - threshold + 1) / Math.min(softness, 256 - threshold)) : 1;
+    weights[value] = t * t * (3 - 2 * t);
   }
 
+  let changed = false;
+  const perChannel = mode === 'rgb';
   for (let i = 0; i < target.length; i += 4) {
     const red = frame[i];
     const green = frame[i + 1];
     const blue = frame[i + 2];
-    if (54 * red + 183 * green + 19 * blue < threshold * 256) continue;
-    target[i] = Math.max(target[i], red);
-    target[i + 1] = Math.max(target[i + 1], green);
-    target[i + 2] = Math.max(target[i + 2], blue);
+    const level = perChannel ? Math.max(red, green, blue) : (54 * red + 183 * green + 19 * blue) >> 8;
+    if (level < threshold) continue;
+
+    for (let channel = i; channel < i + 3; channel++) {
+      const value = frame[channel];
+      if (perChannel && value < threshold) continue;
+      const next = Math.round(value * weights[perChannel ? value : level]);
+      if (next > target[channel]) {
+        target[channel] = next;
+        changed = true;
+      }
+    }
   }
+  return changed;
 }
 
 export function squareCrop(width, height) {
