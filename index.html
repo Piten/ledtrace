@@ -2,18 +2,18 @@
 <html lang="nb">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#101211">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Mobiletrace v0.2</title>
+  <title>Complicated Time Peace – Mobile v0.3</title>
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
   <main>
     <header>
-      <p class="version">MOBILE / V0.2</p>
-      <h1>mobile<br>Trace</h1>
+      <p class="version">MOBILE / V0.3</p>
+      <h1>Complicated<br>Time Peace</h1>
     </header>
     <div class="workspace">
       <section aria-label="Visning">
@@ -22,11 +22,12 @@
             <button id="trace" aria-pressed="true">Lysspor</button>
             <button id="preview" aria-pressed="false" disabled>Kamera</button>
           </div>
-          <span class="size">640 × 640</span>
+          <span class="size">V0.3 · 640 × 640</span>
         </div>
         <div class="frame">
           <canvas id="result" width="640" height="640" aria-label="Akkumulert lysspor"></canvas>
           <video id="video" autoplay muted playsinline aria-label="Kameraforhåndsvisning" hidden></video>
+          <div id="cropGuide" class="crop-guide" aria-hidden="true" hidden></div>
           <div id="empty" class="empty">
             <div class="reticle" aria-hidden="true"></div>
             <p>Åpne kameraet for å sikte inn motivet.</p>
@@ -37,20 +38,23 @@
         <p id="status" class="status" role="status">Kamera av</p>
         <button id="camera">Åpne kamera</button>
         <button id="capture" class="primary" disabled>Start sporing</button>
-        <div class="adjustments">
-          <label for="mode">Sporing</label>
-          <select id="mode" aria-describedby="modeHelp">
-            <option value="luma">Lysstyrke</option>
-            <option value="rgb">RGB-kanaler</option>
-          </select>
-          <p id="modeHelp" class="hint">Terskelen gjelder pikselens samlede lysstyrke.</p>
-          <label for="threshold">Terskel <output id="thresholdValue" for="threshold">145</output></label>
-          <input id="threshold" type="range" min="0" max="255" value="145">
-          <label for="glow">Glødstyrke <output id="glowValue" for="glow">30 %</output></label>
-          <input id="glow" type="range" min="0" max="100" value="30">
-          <label for="spread">Glødspredning <output id="spreadValue" for="spread">18 px</output></label>
-          <input id="spread" type="range" min="4" max="48" value="18">
-        </div>
+        <details class="settings">
+          <summary>Innstillinger</summary>
+          <div class="adjustments">
+            <label for="mode">Sporing</label>
+            <select id="mode" aria-describedby="modeHelp">
+              <option value="luma">Lysstyrke</option>
+              <option value="rgb">RGB-kanaler</option>
+            </select>
+            <p id="modeHelp" class="hint">Terskelen gjelder pikselens samlede lysstyrke.</p>
+            <label for="threshold">Terskel <output id="thresholdValue" for="threshold">145</output></label>
+            <input id="threshold" type="range" min="0" max="255" value="145">
+            <label for="glow">Glødstyrke <output id="glowValue" for="glow">30 %</output></label>
+            <input id="glow" type="range" min="0" max="100" value="30">
+            <label for="spread">Glødspredning <output id="spreadValue" for="spread">18 px</output></label>
+            <input id="spread" type="range" min="4" max="48" value="18">
+          </div>
+        </details>
         <div class="actions">
           <button id="reset" disabled>Nullstill</button>
           <button id="export" disabled>Lagre PNG</button>

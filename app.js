@@ -3,6 +3,8 @@ import { accumulate, blurRGB, squareCrop } from './image.js';
 const byId = (id) => document.getElementById(id);
 const video = byId('video');
 const result = byId('result');
+const cropGuide = byId('cropGuide');
+const frame = video.parentElement;
 const size = result.width;
 const camera = byId('camera');
 const capture = byId('capture');
@@ -40,6 +42,13 @@ let animation = 0;
 let lastSample = -Infinity;
 let lastVideoTime = -1;
 
+function updateCropGuide() {
+  if (!video.videoWidth || !video.videoHeight) return;
+  const scale = Math.max(frame.clientWidth / video.videoWidth, frame.clientHeight / video.videoHeight);
+  const side = Math.min(video.videoWidth, video.videoHeight) * scale;
+  cropGuide.style.width = cropGuide.style.height = side + 'px';
+}
+
 function refreshControls() {
   const ready = Boolean(stream) && !opening;
   camera.textContent = opening ? 'Avbryt kameraåpning' : ready ? 'Lukk kamera' : 'Åpne kamera';
@@ -51,6 +60,8 @@ function refreshControls() {
   preview.setAttribute('aria-pressed', String(view === 'preview'));
   video.hidden = !stream;
   result.hidden = view !== 'trace';
+  cropGuide.hidden = !ready || view !== 'preview';
+  if (!cropGuide.hidden) updateCropGuide();
   byId('empty').hidden = Boolean(ready || hasFrames);
 }
 
@@ -227,5 +238,7 @@ document.addEventListener('visibilitychange', () => {
 });
 window.addEventListener('pagehide', () => closeCamera());
 
+video.addEventListener('resize', updateCropGuide);
+window.addEventListener('resize', updateCropGuide);
 render();
 refreshControls();

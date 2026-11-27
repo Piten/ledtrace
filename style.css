@@ -47,3 +47,68 @@ input[type="range"] { display: block; width: 100%; height: 44px; margin: 0; acce
 select { font: inherit; min-height: 44px; width: 100%; margin-top: .35rem; padding: .5rem; border: 1px solid var(--line); border-radius: .35rem; background: #1c211c; color: inherit; }
 select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .hint { color: var(--muted); font-size: .875rem; margin: .45rem 0 .85rem; }
+
+.settings { min-width: 0; }
+.settings summary {
+  min-height: 44px;
+  padding: .65rem .75rem;
+  border: 1px solid var(--line);
+  border-radius: .35rem;
+  background: #1c211c;
+  cursor: pointer;
+}
+.settings summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.crop-guide { display: none; }
+
+@media (max-width: 47.99rem), (hover: none) and (pointer: coarse) {
+  main { width: 100%; padding: 0; }
+  header, .privacy { display: none; }
+  .frame {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    overflow: hidden;
+    box-shadow: none;
+  }
+  .frame canvas { object-fit: contain; background: #000; }
+  .crop-guide {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    outline: 1px dashed rgba(255, 255, 255, .65);
+    pointer-events: none;
+  }
+  .viewbar, .controls {
+    position: fixed;
+    z-index: 3;
+    left: max(.75rem, env(safe-area-inset-left));
+    right: max(.75rem, env(safe-area-inset-right));
+    margin: 0;
+  }
+  .viewbar { top: max(.5rem, env(safe-area-inset-top)); }
+  .size {
+    padding: .35rem .5rem;
+    border-radius: .35rem;
+    color: #eceee8;
+    background: rgba(16, 18, 17, .88);
+  }
+  .controls {
+    bottom: max(.5rem, env(safe-area-inset-bottom));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: .35rem;
+    padding: 0;
+  }
+  .controls > .status, .controls > .settings, .controls > .actions { grid-column: 1 / -1; }
+  .status { justify-self: start; padding: .3rem .5rem; margin: 0; border-radius: .35rem; }
+  .status, button:not(.primary), .settings summary, .adjustments { background: rgba(16, 18, 17, .9); }
+  .adjustments {
+    max-height: min(15rem, 32dvh);
+    overflow: auto;
+    padding: .75rem;
+    border-radius: .35rem;
+  }
+}
