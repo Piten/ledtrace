@@ -1,11 +1,11 @@
-# Complicated Time Peace – Mobile v0.5
+# Complicated Time Peace – Mobile v0.6
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
 ## Publiser gratis med GitHub Pages
 
 1. Pakk ut ZIP-filen. Opprett et nytt, separat **offentlig** GitHub-repositorium, for eksempel `complicated-time-peace-mobile`. Velg **Add a README file** ved opprettelse for å få en `main`-gren. Et offentlig repositorium kan bruke GitHub Pages med GitHub Free.
-2. Velg **Add file → Upload files**. Last opp `index.html`, `style.css`, `app.js`, `image.js` og eventuelt denne README-filen i roten. Bruk innholdet i mappen, slik at `index.html` ligger på øverste nivå. Arkivet inkluderer også den skjulte filen `.nojekyll`. Du kan ta den med for å hoppe over Jekyll, men appen fungerer også uten den. Velg **Commit changes**.
+2. Velg **Add file → Upload files**. Last opp `index.html`, `style.css`, `app.js`, `image.js`, `manifest.webmanifest` og eventuelt denne README-filen i roten. Bruk innholdet i mappen, slik at `index.html` ligger på øverste nivå. Arkivet inkluderer også den skjulte filen `.nojekyll`. Du kan ta den med for å hoppe over Jekyll, men appen fungerer også uten den. Velg **Commit changes**.
 3. Åpne **Settings → Pages**. Under **Build and deployment**, velg **Deploy from a branch**, deretter `main` og `/(root)`. Klikk **Save**.
 4. Vent til **Settings → Pages** viser adressen. Åpne `https://BRUKERNAVN.github.io/complicated-time-peace-mobile/` direkte i Safari på iPhone eller Chrome på Android. Bruk adressen GitHub viser hvis den avviker. Slå på **Enforce HTTPS** hvis valget er tilgjengelig og ikke allerede aktivert.
 
@@ -38,9 +38,9 @@ Appen leser nye videobilder i takt med kameraet og skalerer det sentrerte kvadra
 - Bruk **Lysstyrke** for å slippe inn hele RGB-pikselet når den vektede lysstyrken når terskelen. Bruk **RGB-kanaler** for å slippe inn rød, grønn og blå separat. Dette gir en mettet rød eller blå LED mulighet til å tegne spor selv når den vektede lysstyrken er lav.
 - Hold telefonen stødig og prøv en rød, grønn og blå lyskilde i et mørkt rom. Begynn med terskel 145. Nullstill før du bytter sporingsmodus for å sammenligne samme motiv fra tomt lerret. Endring av sporingsmodus og terskel gjelder kommende videobilder.
 - Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
-- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.5**.
+- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` og `manifest.webmanifest` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.6**.
 
-**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.5 gjenstår på iPhone Safari og Android Chrome.
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.6 gjenstår på iPhone Safari og Android Chrome.
 
 ## Mobilvisning i v0.3
 
@@ -57,3 +57,12 @@ Sammenlign ved å holde mobilen stødig og bevege en liten LED i en jevn bue, f�
 Når du trykker **Åpne kamera**, prøver appen 0,6× hvis nettleseren tilbyr den innstillingen. Appen viser **0,6× aktiv** først når kameraet rapporterer innstillingen tilbake. Hvis nettleseren i stedet tilbyr et eget ultravidvinkelkamera med gjenkjennelig navn, velger appen det og viser **Ultravidvinkel aktiv**. Bildevinkelen kan avvike fra 0,6× i Kamera-appen. Ellers åpnes vanlig bakkamera med en statusmelding. Nettappen er avhengig av hvilke linser og zoomverdier nettleseren gir tilgang til.
 
 Sjekk statusmeldingen på iPhone rett etter åpning. Rett kameraet mot samme motiv som i Kamera-appen med 0,6× og sammenlign bildevinkel og om kamerafeilen er borte.
+
+## Åpne ledtrace uten adresselinje på iPhone
+
+1. Hvis GitHub allerede viser v0.5, erstatt `index.html` og legg til `manifest.webmanifest` i roten av `piten/ledtrace`. Fra eldre versjoner, oppdater også `app.js`, `image.js` og `style.css`.
+2. Åpne den publiserte siden i Safari. Velg **Del → Legg til på Hjem-skjerm**. Slå på **Åpne som nettapp** hvis valget vises, og trykk **Legg til**.
+3. Start **ledtrace** fra ikonet på Hjem-skjermen. Trykk **Åpne kamera** og gi tilgang hvis du blir spurt.
+4. Sjekk at Safari-adresselinjen er borte. iPhone kan fortsatt vise systemets statuslinje og hjemindikator.
+
+[Apples veiledning](https://support.apple.com/guide/iphone/open-as-web-app-iphea86e5236/ios)

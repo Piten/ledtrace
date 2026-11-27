@@ -1,0 +1,11 @@
+{
+  "id": "./",
+  "name": "Complicated Time Peace – Mobile",
+  "short_name": "ledtrace",
+  "lang": "nb",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101211",
+  "theme_color": "#101211"
+}
