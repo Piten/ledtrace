@@ -18,6 +18,9 @@ const glow = byId('glow');
 const spread = byId('spread');
 const mode = byId('mode');
 const status = byId('status');
+const menu = byId('menu');
+const main = menu.closest('main');
+const settings = byId('settings');
 
 function makeCanvas(side, options) {
   const canvas = document.createElement('canvas');
@@ -52,9 +55,18 @@ function updateCropGuide() {
   frame.style.setProperty('--crop-side', side + 'px');
 }
 
+function setCompact(compact) {
+  main.classList.toggle('compact', compact);
+  menu.setAttribute('aria-expanded', String(!compact));
+  menu.setAttribute('aria-label', compact ? 'Vis meny' : 'Skjul meny');
+  if (compact) settings.open = false;
+}
+
 function refreshControls() {
   const ready = Boolean(stream) && !opening;
   camera.textContent = opening ? 'Avbryt kameraåpning' : ready ? 'Lukk kamera' : 'Åpne kamera';
+  menu.disabled = !ready;
+  if (!ready && main.classList.contains('compact')) setCompact(false);
   preview.disabled = !ready;
   capture.disabled = !ready;
   capture.textContent = recording ? 'Stopp sporing' : 'Start sporing';
@@ -297,6 +309,7 @@ capture.addEventListener('click', () => {
     scheduleSample();
   }
 });
+menu.addEventListener('click', () => setCompact(!main.classList.contains('compact')));
 trace.addEventListener('click', () => show('trace'));
 preview.addEventListener('click', () => show('preview'));
 reset.addEventListener('click', () => {
