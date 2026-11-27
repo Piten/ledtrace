@@ -1,4 +1,4 @@
-# Complicated Time Peace – Mobile v0.6
+# Complicated Time Peace – Mobile v0.8
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
@@ -38,9 +38,9 @@ Appen leser nye videobilder i takt med kameraet og skalerer det sentrerte kvadra
 - Bruk **Lysstyrke** for å slippe inn hele RGB-pikselet når den vektede lysstyrken når terskelen. Bruk **RGB-kanaler** for å slippe inn rød, grønn og blå separat. Dette gir en mettet rød eller blå LED mulighet til å tegne spor selv når den vektede lysstyrken er lav.
 - Hold telefonen stødig og prøv en rød, grønn og blå lyskilde i et mørkt rom. Begynn med terskel 145. Nullstill før du bytter sporingsmodus for å sammenligne samme motiv fra tomt lerret. Endring av sporingsmodus og terskel gjelder kommende videobilder.
 - Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
-- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` og `manifest.webmanifest` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.6**.
+- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` og `manifest.webmanifest` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.8**.
 
-**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. Fysisk testing av v0.6 gjenstår på iPhone Safari og Android Chrome.
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. En test med simulert kamera bekreftet at lyssporet oppdateres oppå kamerabildet mens sporingen pågår, og vises alene ved stopp. Fysisk testing av v0.8 gjenstår på iPhone Safari og Android Chrome.
 
 ## Mobilvisning i v0.3
 
@@ -66,3 +66,9 @@ Sjekk statusmeldingen på iPhone rett etter åpning. Rett kameraet mot samme mot
 4. Sjekk at Safari-adresselinjen er borte. iPhone kan fortsatt vise systemets statuslinje og hjemindikator.
 
 [Apples veiledning](https://support.apple.com/guide/iphone/open-as-web-app-iphea86e5236/ios)
+
+## Lyssporet vises live i v0.8
+
+Trykk **Start sporing** for å se lyssporet bygge seg opp direkte oppå kamerabildet. **Lysspor** viser sporet alene underveis. **Kamera** viser det over kamerabildet igjen. **Stopp sporing** viser sporet alene, klart for PNG-eksport.
+
+Fra v0.7 erstatter du `index.html`, `app.js` og `style.css` i roten av GitHub-prosjektet.

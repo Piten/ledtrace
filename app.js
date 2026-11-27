@@ -47,7 +47,7 @@ function updateCropGuide() {
   if (!video.videoWidth || !video.videoHeight) return;
   const scale = Math.max(frame.clientWidth / video.videoWidth, frame.clientHeight / video.videoHeight);
   const side = Math.min(video.videoWidth, video.videoHeight) * scale;
-  cropGuide.style.width = cropGuide.style.height = side + 'px';
+  frame.style.setProperty('--crop-side', side + 'px');
 }
 
 function refreshControls() {
@@ -60,7 +60,9 @@ function refreshControls() {
   trace.setAttribute('aria-pressed', String(view === 'trace'));
   preview.setAttribute('aria-pressed', String(view === 'preview'));
   video.hidden = !stream;
-  result.hidden = view !== 'trace';
+  const liveOverlay = ready && recording && view === 'preview';
+  frame.classList.toggle('live-overlay', liveOverlay);
+  result.hidden = view !== 'trace' && !liveOverlay;
   cropGuide.hidden = !ready || view !== 'preview';
   if (!cropGuide.hidden) updateCropGuide();
   byId('empty').hidden = Boolean(ready || hasFrames);
@@ -259,13 +261,14 @@ capture.addEventListener('click', () => {
   if (recording) {
     stopRecording();
     status.textContent = 'Sporing stoppet. Kameraet er på.';
+    show('trace');
   } else {
     recording = true;
     lastVideoTime = -1;
     status.textContent = 'Sporing pågår.';
+    show('preview');
     scheduleSample();
   }
-  show('trace');
 });
 trace.addEventListener('click', () => show('trace'));
 preview.addEventListener('click', () => show('preview'));

@@ -112,3 +112,20 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     border-radius: .35rem;
   }
 }
+
+.crop-guide, .frame.live-overlay canvas {
+  width: var(--crop-side);
+  height: var(--crop-side);
+}
+.frame.live-overlay {
+  isolation: isolate;
+  overflow: hidden;
+}
+.frame.live-overlay canvas {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
