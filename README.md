@@ -1,4 +1,4 @@
-# Complicated Time Peace – Mobile v0.8
+# Complicated Time Peace – Mobile v0.9
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
@@ -31,16 +31,16 @@ En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. A
 
 ## Hvordan sporet bygges
 
-Appen leser nye videobilder i takt med kameraet og skalerer det sentrerte kvadratet til 640 × 640. Et piksel passerer hvis den vektede lysstyrken når terskelen. For et piksel som passerer, beholder appen den høyeste verdien som er sett i hver RGB-kanal. Gløden legges til ved visning og eksport, slik at den kan justeres uten å endre det lagrede sporet.
+Appen leser nye videobilder i takt med kameraet og beholder videobildets proporsjoner under sporing. Ved PNG-eksport skaleres det sentrerte kvadratet til 640 × 640. Et piksel passerer hvis den vektede lysstyrken når terskelen. For et piksel som passerer, beholder appen den høyeste verdien som er sett i hver RGB-kanal. Gløden legges til ved visning og eksport, slik at den kan justeres uten å endre det lagrede sporet.
 
 ## Test glød og RGB-sporing i v0.2
 
 - Bruk **Lysstyrke** for å slippe inn hele RGB-pikselet når den vektede lysstyrken når terskelen. Bruk **RGB-kanaler** for å slippe inn rød, grønn og blå separat. Dette gir en mettet rød eller blå LED mulighet til å tegne spor selv når den vektede lysstyrken er lav.
 - Hold telefonen stødig og prøv en rød, grønn og blå lyskilde i et mørkt rom. Begynn med terskel 145. Nullstill før du bytter sporingsmodus for å sammenligne samme motiv fra tomt lerret. Endring av sporingsmodus og terskel gjelder kommende videobilder.
 - Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
-- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` og `manifest.webmanifest` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.8**.
+- For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` og `manifest.webmanifest` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.9**.
 
-**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. En test med simulert kamera bekreftet at lyssporet oppdateres oppå kamerabildet mens sporingen pågår, og vises alene ved stopp. Fysisk testing av v0.8 gjenstår på iPhone Safari og Android Chrome.
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. En test med simulert kamera bekreftet at lyssporet oppdateres oppå kamerabildet mens sporingen pågår, og vises alene ved stopp. I v0.9 bekreftet testen også at kamera og lysspor fyller samme flate under sporing, og at PNG-eksporten er kvadratisk. Fysisk testing av v0.9 gjenstår på iPhone Safari og Android Chrome.
 
 ## Mobilvisning i v0.3
 
@@ -72,3 +72,9 @@ Sjekk statusmeldingen på iPhone rett etter åpning. Rett kameraet mot samme mot
 Trykk **Start sporing** for å se lyssporet bygge seg opp direkte oppå kamerabildet. **Lysspor** viser sporet alene underveis. **Kamera** viser det over kamerabildet igjen. **Stopp sporing** viser sporet alene, klart for PNG-eksport.
 
 Fra v0.7 erstatter du `index.html`, `app.js` og `style.css` i roten av GitHub-prosjektet.
+
+## Full bredde under sporing i v0.9
+
+Kamera og lysspor dekker samme flate under opptak. Appen bruker hele videobildet til sporing og skjuler den stiplede rammen mens du sporer. Skjermens visning følger kamerautsnittet med samme kant-til-kant-beskjæring som før start. PNG-en bruker fortsatt det sentrerte kvadratet.
+
+Fra v0.8 erstatter du `index.html`, `app.js` og `style.css`. Sjekk at det står **V0.9** øverst.

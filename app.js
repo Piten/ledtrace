@@ -5,7 +5,8 @@ const video = byId('video');
 const result = byId('result');
 const cropGuide = byId('cropGuide');
 const frame = video.parentElement;
-const size = result.width;
+const exportSize = result.width;
+const maxTrackingEdge = 800;
 const camera = byId('camera');
 const capture = byId('capture');
 const reset = byId('reset');
@@ -24,12 +25,13 @@ function makeCanvas(side, options) {
   return canvas.getContext('2d', options);
 }
 
-const input = makeCanvas(size, { willReadFrequently: true });
-const base = makeCanvas(size);
+const input = makeCanvas(exportSize, { willReadFrequently: true });
+const base = makeCanvas(exportSize);
+const png = makeCanvas(exportSize, { alpha: false });
 const bloom = makeCanvas(80, { willReadFrequently: true });
 const blurScratch = new Uint8ClampedArray(bloom.canvas.width ** 2 * 4);
 const output = result.getContext('2d', { alpha: false });
-const pixels = base.createImageData(size, size);
+let pixels = base.createImageData(exportSize, exportSize);
 for (let i = 3; i < pixels.data.length; i += 4) pixels.data[i] = 255;
 
 let stream;
@@ -62,8 +64,9 @@ function refreshControls() {
   video.hidden = !stream;
   const liveOverlay = ready && recording && view === 'preview';
   frame.classList.toggle('live-overlay', liveOverlay);
+  frame.classList.toggle('recording', recording);
   result.hidden = view !== 'trace' && !liveOverlay;
-  cropGuide.hidden = !ready || view !== 'preview';
+  cropGuide.hidden = !ready || view !== 'preview' || recording;
   if (!cropGuide.hidden) updateCropGuide();
   byId('empty').hidden = Boolean(ready || hasFrames);
 }
@@ -79,7 +82,7 @@ function render() {
   if (Number(glow.value) === 0) return;
 
   const side = bloom.canvas.width;
-  const radius = Math.round(Number(spread.value) * side / size);
+  const radius = Math.max(1, Math.round(Number(spread.value) * side / exportSize));
   bloom.drawImage(base.canvas, 0, 0, side, side);
   const halo = bloom.getImageData(0, 0, side, side);
   blurRGB(halo.data, blurScratch, side, radius);
@@ -87,7 +90,7 @@ function render() {
   output.save();
   output.globalCompositeOperation = 'lighter';
   output.globalAlpha = Number(glow.value) / 100;
-  output.drawImage(bloom.canvas, 0, 0, size, size);
+  output.drawImage(bloom.canvas, 0, 0, result.width, result.height);
   output.restore();
 }
 
@@ -232,6 +235,28 @@ async function openCamera() {
   }
 }
 
+function fitTrackingCanvas() {
+  const scale = Math.min(1, maxTrackingEdge / Math.max(video.videoWidth, video.videoHeight));
+  const width = Math.max(1, Math.round(video.videoWidth * scale));
+  const height = Math.max(1, Math.round(video.videoHeight * scale));
+  if (width === result.width && height === result.height) return;
+
+  input.canvas.width = width;
+  input.canvas.height = height;
+  input.fillStyle = '#000';
+  input.fillRect(0, 0, width, height);
+  if (hasFrames) {
+    const scaleToFit = Math.min(width / base.canvas.width, height / base.canvas.height);
+    const oldWidth = base.canvas.width * scaleToFit;
+    const oldHeight = base.canvas.height * scaleToFit;
+    input.drawImage(base.canvas, (width - oldWidth) / 2, (height - oldHeight) / 2, oldWidth, oldHeight);
+  }
+  pixels = input.getImageData(0, 0, width, height);
+  base.canvas.width = result.width = width;
+  base.canvas.height = result.height = height;
+  render();
+}
+
 function scheduleSample() {
   animation = useVideoFrames ? video.requestVideoFrameCallback(sample) : requestAnimationFrame(sample);
 }
@@ -241,8 +266,9 @@ function sample() {
   if (video.readyState >= 2 && video.videoWidth && video.videoHeight &&
       (useVideoFrames || video.currentTime !== lastVideoTime)) {
     lastVideoTime = video.currentTime;
-    input.drawImage(video, ...squareCrop(video.videoWidth, video.videoHeight), 0, 0, size, size);
-    const changed = accumulate(pixels.data, input.getImageData(0, 0, size, size).data,
+    fitTrackingCanvas();
+    input.drawImage(video, 0, 0, result.width, result.height);
+    const changed = accumulate(pixels.data, input.getImageData(0, 0, result.width, result.height).data,
       Number(threshold.value), mode.value, 24);
     if (changed) render();
     if (!hasFrames) {
@@ -299,7 +325,8 @@ mode.addEventListener('change', () => {
 exportButton.addEventListener('click', () => {
   // Encode synchronously so the download starts in the user gesture.
   const link = document.createElement('a');
-  link.href = result.toDataURL('image/png');
+  png.drawImage(result, ...squareCrop(result.width, result.height), 0, 0, exportSize, exportSize);
+  link.href = png.canvas.toDataURL('image/png');
   link.download = 'complicated-time-peace-' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
   document.body.append(link);
   link.click();
