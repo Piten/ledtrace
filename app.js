@@ -58,6 +58,7 @@ function refreshControls() {
   preview.disabled = !ready;
   capture.disabled = !ready;
   capture.textContent = recording ? 'Stopp sporing' : 'Start sporing';
+  capture.classList.toggle('is-recording', recording);
   reset.disabled = exportButton.disabled = !hasFrames;
   trace.setAttribute('aria-pressed', String(view === 'trace'));
   preview.setAttribute('aria-pressed', String(view === 'preview'));

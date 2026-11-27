@@ -1,4 +1,4 @@
-# Complicated Time Peace – Mobile v0.9
+# Complicated Time Peace – Mobile v1.0
 
 En frittstående webapp for å lage lysspor med mobilens bakovervendte kamera. Appen er laget for Safari på iPhone og Chrome på Android. Den har ingen byggetrinn, avhengigheter, serverkode eller kobling til Raspberry Pi og Processing. Kameraet brukes uten mikrofon. Bildebehandling og PNG-eksport skjer i nettleseren. Kamerabilder lastes ikke opp.
 
@@ -40,7 +40,7 @@ Appen leser nye videobilder i takt med kameraet og beholder videobildets propors
 - Sett **Glødstyrke** til 0 % for å se selve sporet. Øk styrken og sammenlign **Glødspredning** ved 8 og 30 px. Spredningen angir omtrentlig radius for hvert av de to uskarphetstrinnene i eksportbildet. Begge glødinnstillingene oppdaterer også et stoppet spor og tas med i neste PNG.
 - For å oppdatere det eksisterende `ledtrace`-prosjektet kan du erstatte `index.html`, `style.css`, `app.js` og `image.js` og `manifest.webmanifest` på `main` i én endring. Når Pages har publisert, åpne samme prosjektadresse og sjekk at appen viser **V0.9**.
 
-**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. En test med simulert kamera bekreftet at lyssporet oppdateres oppå kamerabildet mens sporingen pågår, og vises alene ved stopp. I v0.9 bekreftet testen også at kamera og lysspor fyller samme flate under sporing, og at PNG-eksporten er kvadratisk. Fysisk testing av v0.9 gjenstår på iPhone Safari og Android Chrome.
+**Teststatus:** Skrivebords-Chrome med simulert video bekreftet at sporingen følger nye kamerabilder, myk terskel, RGB-sporing, glød, mobilvisning og PNG-eksport. Brukeren har prøvd v0.1 på iPhone med Safari. En test med simulert kamera bekreftet at lyssporet oppdateres oppå kamerabildet mens sporingen pågår, og vises alene ved stopp. I v0.9 bekreftet testen også at kamera og lysspor fyller samme flate under sporing, og at PNG-eksporten er kvadratisk. For v1.0 bekreftet Chrome-testen frostet bakgrunn, avrundede knapper, innstillingspanelet og full bredde under sporing. Fysisk testing av v1.0 gjenstår på iPhone Safari og Android Chrome.
 
 ## Mobilvisning i v0.3
 
@@ -78,3 +78,7 @@ Fra v0.7 erstatter du `index.html`, `app.js` og `style.css` i roten av GitHub-pr
 Kamera og lysspor dekker samme flate under opptak. Appen bruker hele videobildet til sporing og skjuler den stiplede rammen mens du sporer. Skjermens visning følger kamerautsnittet med samme kant-til-kant-beskjæring som før start. PNG-en bruker fortsatt det sentrerte kvadratet.
 
 Fra v0.8 erstatter du `index.html`, `app.js` og `style.css`. Sjekk at det står **V0.9** øverst.
+
+## Oppdater til v1.0
+
+Fra v0.9 erstatter du `index.html`, `app.js` og `style.css` i GitHub-prosjektet. Menyene har fått en frostet, gjennomsiktig bakgrunn, og knappene har fått større, avrundede trykkflater. Åpne **Innstillinger** for terskel, RGB og glød. Bruk appen fra Hjem-skjermen på iPhone for visning uten Safari-adresselinje.
