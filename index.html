@@ -5,17 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#101211">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Complicated Time Peace – Mobile v1.1</title>
+  <title>Complicated Time Peace – Mobile v1.3</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./style.css?v=1.1">
-  <script type="module" src="./app.js?v=1.1"></script>
+  <link rel="stylesheet" href="./style.css?v=1.3">
+  <script type="module" src="./app.js?v=1.3"></script>
 </head>
 <body>
   <main>
     <header>
       <h1>Complicated Time Peace</h1>
     </header>
+    <aside class="rotate-note" aria-labelledby="rotate-title">
+      <span class="rotate-phone" aria-hidden="true"></span>
+      <h2 id="rotate-title">Snu telefonen på siden</h2>
+      <p>Hold den horisontalt for å bruke kameraet.</p>
+    </aside>
     <div class="workspace">
       <section aria-label="Visning">
         <div id="viewbar" class="viewbar">
@@ -23,12 +28,11 @@
             <button id="trace" aria-pressed="true">Lysspor</button>
             <button id="preview" aria-pressed="false" disabled>Kamera</button>
           </div>
-          <span class="size">ledtrace <small>v1.1</small></span>
+          <span class="size">ledtrace <small>v1.3</small></span>
         </div>
         <div class="frame">
           <canvas id="result" width="640" height="640" aria-label="Akkumulert lysspor"></canvas>
           <video id="video" autoplay muted playsinline aria-label="Kameraforhåndsvisning" hidden></video>
-          <div id="cropGuide" class="crop-guide" aria-hidden="true" hidden></div>
           <div id="empty" class="empty">
             <div class="reticle" aria-hidden="true"></div>
             <p>Åpne kameraet for å sikte inn motivet.</p>

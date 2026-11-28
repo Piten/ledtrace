@@ -1,11 +1,10 @@
-import { accumulate, blurRGB, squareCrop } from './image.js';
+import { accumulate, blurRGB } from './image.js';
 
 const byId = (id) => document.getElementById(id);
 const video = byId('video');
 const result = byId('result');
-const cropGuide = byId('cropGuide');
 const frame = video.parentElement;
-const exportSize = result.width;
+const referenceSize = result.width;
 const maxTrackingEdge = 800;
 const camera = byId('camera');
 const capture = byId('capture');
@@ -28,13 +27,12 @@ function makeCanvas(side, options) {
   return canvas.getContext('2d', options);
 }
 
-const input = makeCanvas(exportSize, { willReadFrequently: true });
-const base = makeCanvas(exportSize);
-const png = makeCanvas(exportSize, { alpha: false });
+const input = makeCanvas(referenceSize, { willReadFrequently: true });
+const base = makeCanvas(referenceSize);
 const bloom = makeCanvas(80, { willReadFrequently: true });
 const blurScratch = new Uint8ClampedArray(bloom.canvas.width ** 2 * 4);
 const output = result.getContext('2d', { alpha: false });
-let pixels = base.createImageData(exportSize, exportSize);
+let pixels = base.createImageData(referenceSize, referenceSize);
 for (let i = 3; i < pixels.data.length; i += 4) pixels.data[i] = 255;
 
 let stream;
@@ -47,13 +45,6 @@ let animation = 0;
 const useVideoFrames = typeof video.requestVideoFrameCallback === 'function' &&
   typeof video.cancelVideoFrameCallback === 'function';
 let lastVideoTime = -1;
-
-function updateCropGuide() {
-  if (!video.videoWidth || !video.videoHeight) return;
-  const scale = Math.max(frame.clientWidth / video.videoWidth, frame.clientHeight / video.videoHeight);
-  const side = Math.min(video.videoWidth, video.videoHeight) * scale;
-  frame.style.setProperty('--crop-side', side + 'px');
-}
 
 function setCompact(compact) {
   main.classList.toggle('compact', compact);
@@ -79,8 +70,6 @@ function refreshControls() {
   frame.classList.toggle('live-overlay', liveOverlay);
   frame.classList.toggle('recording', recording);
   result.hidden = view !== 'trace' && !liveOverlay;
-  cropGuide.hidden = !ready || view !== 'preview' || recording;
-  if (!cropGuide.hidden) updateCropGuide();
   byId('empty').hidden = Boolean(ready || hasFrames);
 }
 
@@ -95,7 +84,7 @@ function render() {
   if (Number(glow.value) === 0) return;
 
   const side = bloom.canvas.width;
-  const radius = Math.max(1, Math.round(Number(spread.value) * side / exportSize));
+  const radius = Math.max(1, Math.round(Number(spread.value) * side / referenceSize));
   bloom.drawImage(base.canvas, 0, 0, side, side);
   const halo = bloom.getImageData(0, 0, side, side);
   blurRGB(halo.data, blurScratch, side, radius);
@@ -339,19 +328,26 @@ mode.addEventListener('change', () => {
 exportButton.addEventListener('click', () => {
   // Encode synchronously so the download starts in the user gesture.
   const link = document.createElement('a');
-  png.drawImage(result, ...squareCrop(result.width, result.height), 0, 0, exportSize, exportSize);
-  link.href = png.canvas.toDataURL('image/png');
+  link.href = result.toDataURL('image/png');
   link.download = 'complicated-time-peace-' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
   document.body.append(link);
   link.click();
   link.remove();
 });
+const portrait = window.matchMedia('(orientation: portrait) and (max-width: 47.99rem), ' +
+  '(orientation: portrait) and (hover: none) and (pointer: coarse)');
+portrait.addEventListener('change', (event) => {
+  if (event.matches && recording) {
+    stopRecording();
+    status.textContent = 'Sporing stoppet. Trykk Start sporing for å fortsette.';
+    show('preview');
+  }
+});
+
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && (stream || opening)) closeCamera('Kamera av. Åpne kameraet for å fortsette.');
 });
 window.addEventListener('pagehide', () => closeCamera());
 
-video.addEventListener('resize', updateCropGuide);
-window.addEventListener('resize', updateCropGuide);
 render();
 refreshControls();
